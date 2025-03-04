@@ -13,19 +13,19 @@ pub fn setup_plugin(mut commands: Commands, query_window: Query<&Window>) {
     // TODO
     // Find a better way that hardcoding those values in a vec
     let bodies = vec![
-        // Sun
+        // Sun - normal astronomical values
         Body::new(
-            Vec2::new(0.0, 0.0), 
-            Vec2::new(0.0, 0.0), 
-            0.696340,  // 1.989e30 / 1e24
-            1408.0
+            Vec2::new(0.0, 0.0),       // Position at origin
+            Vec2::new(0.0, 0.0),       // Not moving
+            6.96340e8,                 // Radius in meters (~696,340 km)
+            1408.0                     // Density in kg/m³
         ),
-        // Earth
+        // Earth - normal astronomical values
         Body::new(
-            Vec2::new(149.6, 0.0),  // 149.6e9 / 1e9
-            Vec2::new(0.0, 0.02978),  // 29.78e3 / 1e3 (scaled velocity)
-            5.972,                  // 5.972e24 / 1e24
-            5515.0
+            Vec2::new(149.6e9, 0.0),   // ~149.6 million km from Sun in meters
+            Vec2::new(0.0, 29.78e3),   // Orbital velocity of ~29.78 km/s in m/s
+            6.378e6,                   // Radius in meters (~6,378 km)
+            5515.0                     // Density in kg/m³
         ),
     ];
 
@@ -48,8 +48,8 @@ pub fn setup_plugin(mut commands: Commands, query_window: Query<&Window>) {
     // Size it correctly
     let mut cam = Camera2dBundle::default();
     cam.transform.translation = Vec3::new(center.x, center.y, cam.transform.translation.z);
-    cam.projection.scale = scale * 10.;
-    println!("{}, {}", center, scale);
+    cam.projection.scale = 1. / scale;
+    println!("{:?}", cam.projection);
     commands.spawn((cam, SysCamera));
 }
 
@@ -87,9 +87,9 @@ pub fn update_bodies(
         body.add_position_delta(position_delta);
     }
 
-    if let Some(body) = body_query.iter().next() {
-        println!("{:?}", body.get_position());
-    }
+    // if let Some(body) = body_query.iter().next() {
+    //     println!("{:?}", body.get_position());
+    // }
 }
 
 pub fn setup_body_visuals(
