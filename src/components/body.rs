@@ -2,7 +2,7 @@ use core::f32;
 
 use bevy::prelude::*;
 
-use crate::physics::{G, Force};
+use crate::utility::{G, Force};
 
 #[derive(Debug, Copy, Clone, Component)]
 pub struct Body {

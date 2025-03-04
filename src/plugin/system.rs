@@ -1,17 +1,44 @@
+use bevy::render::view::window;
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 
-use crate::{components::body::Body, physics::Force};
+use crate::components::body::Body;
+use crate::utility::Force;
+use crate::utility::utility_funcs::*;
 
 #[derive(Component)]
 pub struct SysCamera;
 
-pub fn setup_plugin(mut commands: Commands, _asset_server: Res<AssetServer>) {
-    // Spawn a camera for UI
-    commands.spawn((Camera2dBundle::default(), SysCamera));
+pub fn setup_plugin(mut commands: Commands, query_window: Query<&Window>) {
+    // Body init
+    // TODO
+    // Find a better way that hardcoding those values in a vec
+    let bodies = vec![
+        Body::new(Vec2::new(100., 100.), Vec2::new(0., 0.), 10.0, 1e11), 
+        Body::new(Vec2::new(0., 0.), Vec2::new(0., 0.), 10.0, 1e11),
+    ];
 
-    // Spawn a random body
-    commands.spawn(Body::new(Vec2::new(0., 0.), Vec2::new(0., 0.), 10.0, 1e8));
-    commands.spawn(Body::new(Vec2::new(100., 100.), Vec2::new(0., 0.), 10.0, 1e8));
+    // Get min and max for both x and y
+    let window = query_window.single();
+    let bounds = get_window_bounds(&bodies);
+    let (center, scale) = get_camera_setting_on_bounds(
+        bounds, 
+        window.width(),
+        window.height(),
+        1.2);
+
+    // Spawn a random bodies
+    for body in bodies.into_iter() {
+        commands.spawn(body);
+    }
+    
+    // Spawn a camera for UI
+    // AFTER Bodies are created so we can actually 
+    // Size it correctly
+    let mut cam = Camera2dBundle::default();
+    cam.transform.translation = Vec3::new(center.x, center.y, cam.transform.translation.z);
+    cam.projection.scale = scale;
+    println!("{}", scale);
+    commands.spawn((cam, SysCamera));
 }
 
 pub fn update_bodies(
@@ -31,8 +58,6 @@ pub fn update_bodies(
             sum_force[i2] -= g_force;
         }
     }
-    
-    println!("{:?}", sum_force.iter().map(|v| v.clone()*delta));
 
     // From new acceleration, modify speed and position
     for (index, mut body) in body_query.iter_mut().enumerate() {
@@ -47,6 +72,10 @@ pub fn update_bodies(
         let position_delta = delta * delta * acc / 2. + delta * (*body.get_speed());
         body.add_position_delta(position_delta);
     }
+
+    // if let Some(body) = body_query.iter().next() {
+    //     println!("{:?}", body.get_position());
+    // }
 }
 
 pub fn setup_body_visuals(

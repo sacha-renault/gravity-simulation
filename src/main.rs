@@ -1,5 +1,5 @@
 pub mod components;
-pub mod physics;
+pub mod utility;
 pub mod plugin;
 
 use bevy::prelude::*;
