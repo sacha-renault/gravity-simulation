@@ -1,9 +1,13 @@
 pub mod components;
 pub mod physics;
+pub mod plugin;
 
-use components::body::Body;
+use bevy::prelude::*;
+use plugin::SysPlugin;
 
 fn main() {
-    let body = Body::default();
-    println!("{:?}", body)
+    App::new()
+        .add_plugins(DefaultPlugins)
+        .add_plugins(SysPlugin)
+        .run();
 }

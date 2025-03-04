@@ -24,6 +24,12 @@ impl Default for Body {
 }
 
 impl Body {
+    pub fn new(position: Vec2, speed: Vec2, radius: f32, density: f32) -> Self {
+        Self {
+            position, speed, radius, density
+        }
+    }
+
     pub fn volume(&self) -> f32 {
         self.radius.powi(3) * 4. / 3. * f32::consts::PI
     }
@@ -49,5 +55,29 @@ impl Body {
 
         // Apply magnitude to direction to get the force vector
         direction * force_magnitude
+    }
+
+    pub fn get_speed(&self) -> &Vec2 {
+        &self.speed
+    }
+
+    pub fn get_position(&self) -> &Vec2 {
+        &self.position
+    }
+
+    pub fn get_density(&self) -> f32 {
+        self.density
+    }
+
+    pub fn get_radius(&self) -> f32 {
+        self.radius
+    }
+
+    pub fn add_speed_delta(&mut self, speed_delta: Vec2) {
+        self.speed += speed_delta;
+    }
+
+    pub fn add_position_delta(&mut self, position_delta: Vec2) {
+        self.position += position_delta;
     }
 }
