@@ -3,7 +3,7 @@ pub mod types;
 pub mod utility_funcs;
 
 pub use {
-    consts::G,
+    consts::{G, MASS_SCALE, DISTANCE_SCALE},
     types::Force,
     utility_funcs::*,
 };

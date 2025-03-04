@@ -13,8 +13,20 @@ pub fn setup_plugin(mut commands: Commands, query_window: Query<&Window>) {
     // TODO
     // Find a better way that hardcoding those values in a vec
     let bodies = vec![
-        Body::new(Vec2::new(100., 100.), Vec2::new(0., 0.), 10.0, 1e11), 
-        Body::new(Vec2::new(0., 0.), Vec2::new(0., 0.), 10.0, 1e11),
+        // Sun
+        Body::new(
+            Vec2::new(0.0, 0.0), 
+            Vec2::new(0.0, 0.0), 
+            0.696340,  // 1.989e30 / 1e24
+            1408.0
+        ),
+        // Earth
+        Body::new(
+            Vec2::new(149.6, 0.0),  // 149.6e9 / 1e9
+            Vec2::new(0.0, 0.02978),  // 29.78e3 / 1e3 (scaled velocity)
+            5.972,                  // 5.972e24 / 1e24
+            5515.0
+        ),
     ];
 
     // Get min and max for both x and y
@@ -36,8 +48,8 @@ pub fn setup_plugin(mut commands: Commands, query_window: Query<&Window>) {
     // Size it correctly
     let mut cam = Camera2dBundle::default();
     cam.transform.translation = Vec3::new(center.x, center.y, cam.transform.translation.z);
-    cam.projection.scale = scale;
-    println!("{}", scale);
+    cam.projection.scale = scale * 10.;
+    println!("{}, {}", center, scale);
     commands.spawn((cam, SysCamera));
 }
 
@@ -46,7 +58,7 @@ pub fn update_bodies(
     time: Res<Time>,
     mut body_query: Query<&mut Body>
 ) {
-    let delta = time.delta_seconds();
+    let delta = time.delta_seconds() * 100.;
     let bodies = body_query.iter().collect::<Vec<_>>();
     let mut sum_force: Vec<Force> = vec![default(); bodies.len()];
 
@@ -62,7 +74,9 @@ pub fn update_bodies(
     // From new acceleration, modify speed and position
     for (index, mut body) in body_query.iter_mut().enumerate() {
         // calculate acceleeratino from newton laws Sum(F) = m*a <=> a = Sum(F) / m
-        let acc = sum_force[index] / body.mass();
+        let sum = sum_force[index];
+        let total_mass = body.mass();
+        let acc = sum / total_mass;
 
         // Calculate the speed difference
         let speed_delta = delta * acc;
@@ -73,9 +87,9 @@ pub fn update_bodies(
         body.add_position_delta(position_delta);
     }
 
-    // if let Some(body) = body_query.iter().next() {
-    //     println!("{:?}", body.get_position());
-    // }
+    if let Some(body) = body_query.iter().next() {
+        println!("{:?}", body.get_position());
+    }
 }
 
 pub fn setup_body_visuals(
