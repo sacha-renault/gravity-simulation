@@ -3,7 +3,7 @@ use bevy::prelude::*;
 use crate::components::body::Body;
 
 #[derive(Component)]
-pub struct CameraScaling(f32);
+pub struct CameraScaling(pub f32);
 
 #[derive(Component)]
 pub struct SysCamera;
