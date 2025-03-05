@@ -1,7 +1,8 @@
-mod system;
+mod systems;
 
 use bevy::prelude::*;
-use system::*;
+use systems::*;
+use systems::camera::update_camera_position;
 
 pub struct SysPlugin;
 impl Plugin for SysPlugin {
@@ -9,6 +10,7 @@ impl Plugin for SysPlugin {
         app
             .add_systems(Startup, setup_plugin)
             .add_systems(Update, (setup_body_visuals, update_body_visuals))
-            .add_systems(Update, update_bodies);
+            .add_systems(Update, update_bodies)
+            .add_systems(Update, update_camera_position);
     }
 }

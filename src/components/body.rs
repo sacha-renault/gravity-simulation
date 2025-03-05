@@ -26,9 +26,9 @@ impl Default for Body {
 impl Body {
     pub fn new(position: Vec2, speed: Vec2, radius: f32, density: f32) -> Self {
         Self {
-            position: position / DISTANCE_SCALE, 
-            speed: speed / DISTANCE_SCALE, 
-            radius: radius / DISTANCE_SCALE, 
+            position: position / DISTANCE_SCALE,
+            speed: speed / DISTANCE_SCALE,
+            radius: radius / DISTANCE_SCALE,
             density: density / MASS_SCALE
         }
     }

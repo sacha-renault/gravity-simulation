@@ -1,12 +1,12 @@
-use bevy::render::view::window;
+pub mod camera;
+
 use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
 
+use camera::*;
 use crate::components::body::Body;
+use crate::components::SysCamera;
 use crate::utility::Force;
 use crate::utility::utility_funcs::*;
-
-#[derive(Component)]
-pub struct SysCamera;
 
 pub fn setup_plugin(mut commands: Commands, query_window: Query<&Window>) {
     // Body init
@@ -31,9 +31,9 @@ pub fn setup_plugin(mut commands: Commands, query_window: Query<&Window>) {
 
     // Get min and max for both x and y
     let window = query_window.single();
-    let bounds = get_window_bounds(&bodies);
+    let bounds = get_window_bounds(&bodies.iter().collect());
     let (center, scale) = get_camera_setting_on_bounds(
-        bounds, 
+        bounds,
         window.width(),
         window.height(),
         1.2);
@@ -42,23 +42,21 @@ pub fn setup_plugin(mut commands: Commands, query_window: Query<&Window>) {
     for body in bodies.into_iter() {
         commands.spawn(body);
     }
-    
+
     // Spawn a camera for UI
-    // AFTER Bodies are created so we can actually 
+    // AFTER Bodies are created so we can actually
     // Size it correctly
     let mut cam = Camera2dBundle::default();
     cam.transform.translation = Vec3::new(center.x, center.y, cam.transform.translation.z);
-    cam.projection.scale = 1. / scale;
-    println!("{:?}", cam.projection);
+    cam.projection.scale = scale;
     commands.spawn((cam, SysCamera));
 }
 
 pub fn update_bodies(
-    mut commands: Commands, 
     time: Res<Time>,
     mut body_query: Query<&mut Body>
 ) {
-    let delta = time.delta_seconds() * 100.;
+    let delta = time.delta_seconds() * 1e6;
     let bodies = body_query.iter().collect::<Vec<_>>();
     let mut sum_force: Vec<Force> = vec![default(); bodies.len()];
 
@@ -86,10 +84,6 @@ pub fn update_bodies(
         let position_delta = delta * delta * acc / 2. + delta * (*body.get_speed());
         body.add_position_delta(position_delta);
     }
-
-    // if let Some(body) = body_query.iter().next() {
-    //     println!("{:?}", body.get_position());
-    // }
 }
 
 pub fn setup_body_visuals(
@@ -102,10 +96,10 @@ pub fn setup_body_visuals(
         // Calculate color based on density (you can customize this)
         let hue = (body.get_density() * 0.5) % 1.0;
         let color = Color::hsl(hue * 360.0, 0.8, 0.5);
-        
+
         // Create a circular mesh for the body
         commands.entity(entity).insert(MaterialMesh2dBundle {
-            mesh: meshes.add(shape::Circle::new(body.get_radius()).into()).into(),
+            mesh: meshes.add(shape::Circle::new(body.get_radius() * 1.).into()).into(),
             material: materials.add(ColorMaterial::from(color)),
             transform: Transform::from_translation(Vec3::new(body.get_position().x, body.get_position().y, 0.0)),
             ..default()
