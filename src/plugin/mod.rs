@@ -2,7 +2,6 @@ mod systems;
 
 use bevy::prelude::*;
 use systems::*;
-use systems::camera::update_camera_position;
 
 pub struct SysPlugin;
 impl Plugin for SysPlugin {

@@ -1,6 +1,7 @@
 pub mod body;
+pub mod cameras;
 
-use bevy::prelude::*;
-
-#[derive(Component)]
-pub struct SysCamera;
+pub use {
+    body::Body,
+    cameras::{CameraFocusType, CameraScaling, SysCamera}
+};
