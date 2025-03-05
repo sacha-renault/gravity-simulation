@@ -9,12 +9,12 @@ pub struct CameraScaling(pub f32);
 pub struct SysCamera;
 
 #[derive(Component)]
-pub enum CameraFocusType<'a> {
+pub enum CameraFocusType {
     /// Camera is fixed on a point
     Fixed(Vec3),
 
     /// Camera is center on `Body`
-    BodyCentered(&'a Body),
+    BodyCentered(u64),
 
     /// Camera will try to englobe all the bodies in on a single view
     Global(f32)
