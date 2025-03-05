@@ -2,7 +2,7 @@ use bevy::prelude::*;
 use bevy::sprite::MaterialMesh2dBundle;
 
 use crate::components::body::Body;
-use crate::components::SysCamera;
+use crate::components::{CameraState, CameraFocusType, SysCamera};
 use crate::utility::utility_funcs::*;
 
 pub fn setup_plugin(mut commands: Commands, query_window: Query<&Window>) {

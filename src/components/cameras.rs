@@ -1,20 +1,20 @@
 use bevy::prelude::*;
 
-use crate::components::body::Body;
-
 #[derive(Component)]
 pub struct CameraScaling(pub f32);
 
 #[derive(Component)]
 pub struct SysCamera;
 
-#[derive(Component)]
+#[derive(Resource)]
+pub struct CameraState { pub focus_type: CameraFocusType }
+
 pub enum CameraFocusType {
     /// Camera is fixed on a point
-    Fixed(Vec3),
+    Fixed(Vec2),
 
     /// Camera is center on `Body`
-    BodyCentered(u64),
+    BodyCentered(u32),
 
     /// Camera will try to englobe all the bodies in on a single view
     Global(f32)

@@ -3,5 +3,5 @@ pub mod cameras;
 
 pub use {
     body::Body,
-    cameras::{CameraFocusType, CameraScaling, SysCamera}
+    cameras::{CameraState, CameraFocusType, CameraScaling, SysCamera}
 };
