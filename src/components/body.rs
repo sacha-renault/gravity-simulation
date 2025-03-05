@@ -60,6 +60,10 @@ impl Body {
         direction * force_magnitude
     }
 
+    pub fn get_acceleration(&self, force: Force) -> Vec2 {
+        force / self.mass()
+    }
+
     pub fn get_speed(&self) -> &Vec2 {
         &self.speed
     }

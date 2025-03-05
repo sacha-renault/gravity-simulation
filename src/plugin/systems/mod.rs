@@ -72,9 +72,8 @@ pub fn update_bodies(
     // From new acceleration, modify speed and position
     for (index, mut body) in body_query.iter_mut().enumerate() {
         // calculate acceleeratino from newton laws Sum(F) = m*a <=> a = Sum(F) / m
-        let sum = sum_force[index];
-        let total_mass = body.mass();
-        let acc = sum / total_mass;
+        let force = sum_force[index];
+        let acc = body.get_acceleration(force);
 
         // Calculate the speed difference
         let speed_delta = delta * acc;
