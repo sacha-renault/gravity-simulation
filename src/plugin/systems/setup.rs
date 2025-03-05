@@ -1,8 +1,8 @@
-use bevy::{prelude::*, sprite::MaterialMesh2dBundle};
+use bevy::prelude::*;
+use bevy::sprite::MaterialMesh2dBundle;
 
 use crate::components::body::Body;
 use crate::components::SysCamera;
-use crate::utility::Force;
 use crate::utility::utility_funcs::*;
 
 pub fn setup_plugin(mut commands: Commands, query_window: Query<&Window>) {
@@ -62,7 +62,7 @@ pub fn setup_body_visuals(
 
         // Create a circular mesh for the body
         commands.entity(entity).insert(MaterialMesh2dBundle {
-            mesh: meshes.add(shape::Circle::new(body.get_radius() * 1.).into()).into(),
+            mesh: meshes.add(shape::Circle::new(body.get_radius()).into()).into(),
             material: materials.add(ColorMaterial::from(color)),
             transform: Transform::from_translation(Vec3::new(body.get_position().x, body.get_position().y, 0.0)),
             ..default()
