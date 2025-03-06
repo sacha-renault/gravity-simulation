@@ -2,7 +2,7 @@ mod systems;
 
 use bevy::prelude::*;
 use systems::*;
-use crate::components::{CameraFocusType, CameraState, SysCamera};
+use crate::components::{CameraFocusType, CameraState};
 
 pub struct SysPlugin;
 impl Plugin for SysPlugin {
@@ -13,7 +13,7 @@ impl Plugin for SysPlugin {
             .add_systems(Update, update_bodies)
             .add_systems(Update, update_camera_position)
             .insert_resource(CameraState {
-                focus_type: CameraFocusType::Global(1.2),
+                focus_type: CameraFocusType::FixedAutoScale(Vec2::ZERO, 1.2),
             });
     }
 }

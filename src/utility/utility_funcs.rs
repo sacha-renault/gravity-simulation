@@ -30,7 +30,7 @@ pub fn get_camera_setting_on_bounds(
     bounds: (f32, f32, f32, f32),
     viewport_width: f32,
     viewport_height: f32,
-    padding_factor: f32 // e.g., 1.2 for 20% padding
+    margin_factor: f32 // e.g., 1.2 for 20% padding
 ) -> (Vec2, f32) {
     let (x_min, x_max, y_min, y_max) = bounds;
 
@@ -45,11 +45,31 @@ pub fn get_camera_setting_on_bounds(
     );
 
     // For height to fit: scale must be at least bounds_height * padding_factor
-    let scale_for_height= (bounds_height * padding_factor) / viewport_height;
-    let scale_for_width = (bounds_width * padding_factor) / viewport_width;
+    let scale_for_height= (bounds_height * margin_factor) / viewport_height;
+    let scale_for_width = (bounds_width * margin_factor) / viewport_width;
 
     // Use the larger scale to ensure everything fits
     let scale = scale_for_height.max(scale_for_width);
 
     (center, scale)
+}
+
+pub fn get_camera_settings_on_center(
+    bounds: (f32, f32, f32, f32),
+    center: Vec2,
+    viewport_width: f32,
+    viewport_height: f32,
+    margin_factor: f32 // e.g., 1.2 for 20% padding
+) -> f32 {
+    let (x_min, x_max, y_min, y_max) = bounds;
+    let (x_center, y_center) = (center.x, center.y);
+    let x_req = (x_center - x_min).abs().max((x_center - x_max).abs()) * 2.;
+    let y_req = (y_center - y_min).abs().max((y_center - y_max).abs()) * 2.;
+
+    // For height to fit: scale must be at least bounds_height * padding_factor
+    let scale_for_height= (y_req * margin_factor) / viewport_height;
+    let scale_for_width = (x_req * margin_factor) / viewport_width;
+
+    // Use the larger scale to ensure everything fits
+    scale_for_height.max(scale_for_width)
 }

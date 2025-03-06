@@ -19,7 +19,7 @@ pub fn update_camera_position(
         CameraFocusType::Global(margin) => {
             // Get only the body in this case
             let bodies = body_query.iter().map(|t| t.1).collect::<Vec<_>>();
-            let (center, scale) = update_camera_global(bodies, query_window, *margin);
+            let (center, scale) = get_camera_global_settings(bodies, query_window, *margin);
             transform.translation = Vec3::new(center.x, center.y, transform.translation.z);
             projection.scale = scale;
         },
@@ -34,16 +34,33 @@ pub fn update_camera_position(
         CameraFocusType::Fixed(pos, scale) => {
             transform.translation = Vec3::new(pos.x, pos.y, transform.translation.z);
             projection.scale = *scale;
+        },
+        CameraFocusType::FixedAutoScale(pos, margin) => {
+            let bodies = body_query.iter().map(|t| t.1).collect::<Vec<_>>();
+            let scale = get_camera_fixed_settings(*pos, bodies, query_window, *margin);
+            transform.translation = Vec3::new(pos.x, pos.y, transform.translation.z);
+            projection.scale = scale;
         }
     };
 }
 
-fn update_camera_global(bodies: Vec<&Body>, query_window: Query<&Window>, margin: f32) -> (Vec2, f32){
+fn get_camera_global_settings(bodies: Vec<&Body>, query_window: Query<&Window>, margin: f32) -> (Vec2, f32){
     let window = query_window.single();
     let bounds = get_window_bounds(&bodies);
     get_camera_setting_on_bounds(
         bounds,
         window.width(),
         window.height(),
-        1.2)
+        margin)
+}
+
+fn get_camera_fixed_settings(center: Vec2, bodies: Vec<&Body>, query_window: Query<&Window>, margin: f32) -> f32 {
+    let window = query_window.single();
+    let bounds = get_window_bounds(&bodies);
+    get_camera_settings_on_center(
+        bounds,
+        center,
+        window.width(),
+        window.height(),
+        margin)
 }
