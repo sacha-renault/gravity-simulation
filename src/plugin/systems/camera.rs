@@ -15,31 +15,30 @@ pub fn update_camera_position(
     let (mut transform, mut projection) = camera_query.single_mut();
 
     // Get new center / scale
-    let (center, scale) = match &camera_state.focus_type {
-        CameraFocusType::Global(_) => {
+    match &camera_state.focus_type {
+        CameraFocusType::Global(margin) => {
             // Get only the body in this case
             let bodies = body_query.iter().map(|t| t.1).collect::<Vec<_>>();
-            update_camera_global(bodies, query_window)
+            let (center, scale) = update_camera_global(bodies, query_window, *margin);
+            transform.translation = Vec3::new(center.x, center.y, transform.translation.z);
+            projection.scale = scale;
         },
-        CameraFocusType::BodyCentered(id) => {
+        CameraFocusType::BodyCentered(id, scale) => {
             if let Ok(body) = body_query.get_component::<Body>(Entity::from_raw(*id)) {
-                (*body.get_position(), projection.scale) // we actually don't have to change the scale here
-            } else {
-                (Vec2::default(), projection.scale)
+                let pos = *body.get_position();
+                transform.translation = Vec3::new(pos.x, pos.y, transform.translation.z);
+                projection.scale = *scale;
             }
+            // If the body wasn't found, we just don't do anything ...
         },
-        CameraFocusType::Fixed(_) => {
-            // TODO
-            // We have to ensure position isn't the same ...
-            return
+        CameraFocusType::Fixed(pos, scale) => {
+            transform.translation = Vec3::new(pos.x, pos.y, transform.translation.z);
+            projection.scale = *scale;
         }
     };
-
-    transform.translation = Vec3::new(center.x, center.y, transform.translation.z);
-    projection.scale = scale;
 }
 
-fn update_camera_global(bodies: Vec<&Body>, query_window: Query<&Window>) -> (Vec2, f32){
+fn update_camera_global(bodies: Vec<&Body>, query_window: Query<&Window>, margin: f32) -> (Vec2, f32){
     let window = query_window.single();
     let bounds = get_window_bounds(&bodies);
     get_camera_setting_on_bounds(

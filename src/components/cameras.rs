@@ -9,13 +9,17 @@ pub struct SysCamera;
 #[derive(Resource)]
 pub struct CameraState { pub focus_type: CameraFocusType }
 
+/// Defines how the camera should position and scale itself in the simulation
 pub enum CameraFocusType {
-    /// Camera is fixed on a point
-    Fixed(Vec2),
+    /// Camera is fixed at a specific position with a defined scale
+    /// Parameters: (position: Vec2, scale: f32)
+    Fixed(Vec2, f32),
 
-    /// Camera is center on `Body`
-    BodyCentered(u32),
+    /// Camera is centered on a specific Body entity
+    /// Parameters: (entity_id: u32, scale: f32)
+    BodyCentered(u32, f32),
 
-    /// Camera will try to englobe all the bodies in on a single view
+    /// Camera will automatically adjust to keep all bodies in view
+    /// Parameter: (margin: f32) - Additional space around the bounds of all bodies
     Global(f32)
 }
