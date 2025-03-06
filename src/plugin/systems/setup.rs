@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::sprite::MaterialMesh2dBundle;
 
-use crate::shared::{SysCamera, Body};
+use crate::shared::Body;
 
 pub fn setup_plugin(mut commands: Commands) {
     // Body init
@@ -28,10 +28,6 @@ pub fn setup_plugin(mut commands: Commands) {
     for body in bodies.into_iter() {
         commands.spawn(body);
     }
-
-    // Spawn a camera for UI
-    let cam = Camera2dBundle::default();
-    commands.spawn((cam, SysCamera));
 }
 
 pub fn setup_body_visuals(

@@ -3,6 +3,25 @@ use bevy::prelude::*;
 use crate::utility::utility_funcs::*;
 use crate::shared::{Body, SysCamera, CameraState, FocusType};
 
+pub fn setup_camera(
+    mut commands: Commands,
+    query_bodies: Query<&Body>,
+    query_window: Query<&Window>,
+    mut camera_state: ResMut<CameraState>
+) {
+    // Spawn a camera for UI
+    let cam = Camera2dBundle::default();
+    commands.spawn((cam, SysCamera));
+
+    // Setup the camera state
+    let bodies = query_bodies.iter().collect();
+    let position = Vec2::ZERO;
+    let scale = get_camera_fixed_settings(position, bodies, query_window, camera_state.margin());
+    camera_state.set_scale(scale);
+    camera_state.set_position(position);
+    println!("{}", scale);
+}
+
 /// Updates the camera position and scale based on the current camera focus type
 ///
 /// This system handles different camera behaviors including global view,
