@@ -13,7 +13,7 @@ impl Plugin for SysPlugin {
             .add_systems(Update, update_bodies)
             .add_systems(Update, update_camera_position)
             .insert_resource(CameraState {
-                focus_type: CameraFocusType::FixedAutoScale(Vec2::ZERO, 1.2),
+                focus_type: CameraFocusType::FixedMaxAutoScale(Vec2::ZERO, 1.2),
             });
     }
 }

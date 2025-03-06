@@ -40,6 +40,16 @@ pub fn update_camera_position(
             let scale = get_camera_fixed_settings(*pos, bodies, query_window, *margin);
             transform.translation = Vec3::new(pos.x, pos.y, transform.translation.z);
             projection.scale = scale;
+        },
+        CameraFocusType::FixedMaxAutoScale(pos, margin) => {
+            let bodies = body_query.iter().map(|t| t.1).collect::<Vec<_>>();
+            let scale = get_camera_fixed_settings(*pos, bodies, query_window, *margin);
+            transform.translation = Vec3::new(pos.x, pos.y, transform.translation.z);
+
+            // only update if scale is larger than current scale
+            if projection.scale < scale {
+                projection.scale = scale;
+            }
         }
     };
 }

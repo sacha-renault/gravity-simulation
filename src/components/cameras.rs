@@ -19,6 +19,11 @@ pub enum CameraFocusType {
     /// Parameter: (position: Vec2, margin: f32) - The fixed position where the camera will remain centered
     FixedAutoScale(Vec2, f32),
 
+    /// Camera position is fixed with scale that only increases automatically to fit all bodies
+    /// Parameters: (position: Vec2, margin: f32) - The fixed position where the camera will remain centered and margin around bodies
+    /// Scale can only decrease through user input, preventing automatic zooming in when bodies move closer together
+    FixedMaxAutoScale(Vec2, f32),
+
     /// Camera is centered on a specific Body entity
     /// Parameters: (entity_id: u32, scale: f32)
     BodyCentered(u32, f32),
