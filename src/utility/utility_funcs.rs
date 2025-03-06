@@ -73,3 +73,16 @@ pub fn get_camera_settings_on_center(
     // Use the larger scale to ensure everything fits
     scale_for_height.max(scale_for_width)
 }
+
+/// Updates a transform's position while preserving the z-coordinate
+///
+/// Sets the x and y components of the transform's translation
+/// to match the provided 2D position vector
+///
+/// # Parameters
+/// * `transform` - Transform to be updated
+/// * `position` - New 2D position
+pub fn update_transform_2d(transform: &mut Transform, position: &Vec2) {
+    transform.translation.x = position.x;
+    transform.translation.y = position.y;
+}

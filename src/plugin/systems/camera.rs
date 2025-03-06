@@ -2,7 +2,7 @@ use bevy::prelude::*;
 
 use crate::components::body::Body;
 use crate::utility::utility_funcs::*;
-use crate::components::{SysCamera, CameraState, CameraFocusType};
+use crate::components::{SysCamera, CameraState, FocusType};
 
 /// Updates the camera position and scale based on the current camera focus type
 ///
@@ -18,50 +18,54 @@ pub fn update_camera_position(
     let (mut transform, mut projection) = camera_query.single_mut();
 
     // Get new center / scale
-    match &camera_state.focus_type {
-        CameraFocusType::Global(margin) => {
+    match camera_state.focus_type() {
+        FocusType::Global => {
             let bodies = extract_bodies(&body_query);
-            let (position, scale) = get_camera_global_settings(bodies, query_window, *margin);
-            update_position(&mut transform, &position);
+            let (position, scale) = get_camera_global_settings(bodies, query_window, camera_state.margin());
+            update_transform_2d(&mut transform, &position);
             projection.scale = scale;
         },
-        CameraFocusType::BodyCentered(id, scale) => {
+        FocusType::BodyCentered(id) => {
             // Center position on the body if it was found
             if let Ok(body) = body_query.get_component::<Body>(Entity::from_raw(*id)) {
-                update_position(&mut transform, body.get_position());
+                update_transform_2d(&mut transform, body.get_position());
             }
 
             // only update if use changed the scale value
-            if projection.scale != *scale {
-                projection.scale = *scale;
+            let scale = camera_state.scale();
+            if projection.scale != scale {
+                projection.scale = scale;
             }
         },
-        CameraFocusType::Fixed(position, scale) => {
+        FocusType::Fixed => {
             // Update center
-            update_position(&mut transform, position);
+            update_transform_2d(&mut transform, camera_state.position());
 
             // only update if use changed the scale value
-            if projection.scale != *scale {
-                projection.scale = *scale;
+            let scale = camera_state.scale();
+            if projection.scale != scale {
+                projection.scale = scale;
             }
         },
-        CameraFocusType::FixedAutoScale(position, margin) => {
+        FocusType::FixedAutoScale => {
+            let position = camera_state.position();
             let bodies = extract_bodies(&body_query);
-            let scale = get_camera_fixed_settings(*position, bodies, query_window, *margin);
-            update_position(&mut transform, position);
+            let scale = get_camera_fixed_settings(*position, bodies, query_window, camera_state.margin());
+            update_transform_2d(&mut transform, position);
             projection.scale = scale;
         },
-        CameraFocusType::FixedMaxAutoScale(position, margin) => {
+        FocusType::FixedMaxAutoScale => {
+            let position = camera_state.position();
             let bodies = extract_bodies(&body_query);
-            let scale = get_camera_fixed_settings(*position, bodies, query_window, *margin);
-            update_position(&mut transform, position);
+            let scale = get_camera_fixed_settings(*position, bodies, query_window, camera_state.margin());
+            update_transform_2d(&mut transform, position);
 
             // only update if scale is larger than current scale
             if projection.scale < scale {
                 projection.scale = scale;
             }
         }
-    };
+    }
 }
 
 /// Calculates camera position and scale to view all bodies with margin
@@ -123,17 +127,4 @@ fn get_camera_fixed_settings(center: Vec2, bodies: Vec<&Body>, query_window: Que
 /// * `Vec<&'a Body>` - A collection of references to Body components
 fn extract_bodies<'a>(body_query: &'a Query<(Entity, &Body)>) -> Vec<&'a Body> {
     body_query.iter().map(|t| t.1).collect()
-}
-
-/// Updates a transform's position while preserving the z-coordinate
-///
-/// Sets the x and y components of the transform's translation
-/// to match the provided 2D position vector
-///
-/// # Parameters
-/// * `transform` - Transform to be updated
-/// * `position` - New 2D position
-fn update_position(transform: &mut Transform, position: &Vec2) {
-    transform.translation.x = position.x;
-    transform.translation.y = position.y;
 }
