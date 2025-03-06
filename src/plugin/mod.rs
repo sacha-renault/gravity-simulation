@@ -12,7 +12,7 @@ impl Plugin for SysPlugin {
             .add_systems(Update, (setup_body_visuals, update_body_visuals))
             .add_systems(Update, update_bodies)
             .add_systems(Update, update_camera_position)
-            .add_systems(Update, (handle_wheel_event, handle_keyboard_event, handle_mouse_event))
+            .add_systems(Update, (handle_wheel_event, handle_keyboard_event, handle_mouse_motion_event))
             .insert_resource(CameraState::default())
             .insert_resource(SimulationState::default());
     }

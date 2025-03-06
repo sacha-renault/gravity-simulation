@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::input::mouse::{MouseMotion, MouseWheel};
 
-use crate::shared::CameraState;
+use crate::shared::{CameraState, SimulationState};
 
 /// Handles mouse wheel events to implement camera zooming functionality.
 ///
@@ -43,7 +43,7 @@ pub fn handle_wheel_event(
 /// # Behavior
 /// * When left mouse button is pressed: Accumulates all motion deltas and updates camera position
 /// * When left mouse button is released: Clears motion events to reset tracking
-pub fn handle_mouse_event(
+pub fn handle_mouse_motion_event(
     mouse_button_input: Res<Input<MouseButton>>,
     mut mouse_motion_events: EventReader<MouseMotion>,
     mut camera_state: ResMut<CameraState>,
@@ -62,6 +62,18 @@ pub fn handle_mouse_event(
     }
 }
 
-pub fn handle_keyboard_event(keyboard_input: Res<Input<KeyCode>>) {
+pub fn handle_keyboard_event(
+    keyboard_input: Res<Input<KeyCode>>,
+    mut state: ResMut<SimulationState>,
+) {
+    if keyboard_input.pressed(KeyCode::NumpadAdd) {
+        state.time_factor *= 1.01;
+    }
+    if keyboard_input.pressed(KeyCode::NumpadSubtract) {
+        state.time_factor /= 1.01;
+    }
 
+    if keyboard_input.just_pressed(KeyCode::Space) {
+        state.paused = !state.paused;
+    }
 }
