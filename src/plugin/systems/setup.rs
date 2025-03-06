@@ -2,10 +2,9 @@ use bevy::prelude::*;
 use bevy::sprite::MaterialMesh2dBundle;
 
 use crate::components::body::Body;
-use crate::components::{CameraState, CameraFocusType, SysCamera};
-use crate::utility::utility_funcs::*;
+use crate::components::SysCamera;
 
-pub fn setup_plugin(mut commands: Commands, query_window: Query<&Window>) {
+pub fn setup_plugin(mut commands: Commands) {
     // Body init
     // TODO
     // Find a better way that hardcoding those values in a vec
@@ -26,26 +25,13 @@ pub fn setup_plugin(mut commands: Commands, query_window: Query<&Window>) {
         ),
     ];
 
-    // Get min and max for both x and y
-    let window = query_window.single();
-    let bounds = get_window_bounds(&bodies.iter().collect());
-    let (center, scale) = get_camera_setting_on_bounds(
-        bounds,
-        window.width(),
-        window.height(),
-        1.2);
-
     // Spawn a random bodies
     for body in bodies.into_iter() {
         commands.spawn(body);
     }
 
     // Spawn a camera for UI
-    // AFTER Bodies are created so we can actually
-    // Size it correctly
-    let mut cam = Camera2dBundle::default();
-    cam.transform.translation = Vec3::new(center.x, center.y, cam.transform.translation.z);
-    cam.projection.scale = scale;
+    let cam = Camera2dBundle::default();
     commands.spawn((cam, SysCamera));
 }
 
