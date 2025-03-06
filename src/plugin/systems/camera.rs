@@ -1,8 +1,7 @@
 use bevy::prelude::*;
 
-use crate::components::body::Body;
 use crate::utility::utility_funcs::*;
-use crate::components::{SysCamera, CameraState, FocusType};
+use crate::shared::{Body, SysCamera, CameraState, FocusType};
 
 /// Updates the camera position and scale based on the current camera focus type
 ///

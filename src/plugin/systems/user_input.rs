@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::input::mouse::{MouseMotion, MouseWheel};
 
-use crate::components::{FocusType, CameraState, SysCamera};
+use crate::shared::CameraState;
 
 /// Handles mouse wheel events to implement camera zooming functionality.
 ///

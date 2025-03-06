@@ -1,13 +1,19 @@
 use bevy::prelude::*;
 
-use crate::components::body::Body;
+use crate::shared::{SimulationState, Body};
 use crate::utility::Force;
 
 pub fn update_bodies(
     time: Res<Time>,
-    mut body_query: Query<&mut Body>
+    mut body_query: Query<&mut Body>,
+    simulation_state: Res<SimulationState>
 ) {
-    let delta = time.delta_seconds() * 1e6;
+    // Early exit if simulation is paused
+    if simulation_state.paused {
+        return;
+    }
+
+    let delta = time.delta_seconds() * simulation_state.time_factor;
     let bodies = body_query.iter().collect::<Vec<_>>();
     let mut sum_force: Vec<Force> = vec![default(); bodies.len()];
 

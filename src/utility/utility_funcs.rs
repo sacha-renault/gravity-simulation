@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::components::body::Body;
+use crate::shared::Body;
 
 pub fn get_window_bounds(bodies: &Vec<&Body>) -> (f32, f32, f32, f32) {
     let x_min = bodies

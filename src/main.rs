@@ -1,4 +1,4 @@
-pub mod components;
+pub mod shared;
 pub mod utility;
 pub mod plugin;
 

@@ -2,7 +2,7 @@ mod systems;
 
 use bevy::prelude::*;
 use systems::*;
-use crate::components::CameraState;
+use crate::shared::{CameraState, SimulationState};
 
 pub struct SysPlugin;
 impl Plugin for SysPlugin {
@@ -13,6 +13,7 @@ impl Plugin for SysPlugin {
             .add_systems(Update, update_bodies)
             .add_systems(Update, update_camera_position)
             .add_systems(Update, (handle_wheel_event, handle_keyboard_event, handle_mouse_event))
-            .insert_resource(CameraState::default());
+            .insert_resource(CameraState::default())
+            .insert_resource(SimulationState::default());
     }
 }

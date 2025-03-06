@@ -1,6 +1,6 @@
 use bevy::prelude::*;
 
-use crate::components::body::Body;
+use crate::shared::Body;
 
 // This system updates the visuals for bodies when they move
 pub fn update_body_visuals(
