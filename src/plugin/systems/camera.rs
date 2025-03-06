@@ -15,8 +15,7 @@ pub fn setup_camera(
 
     // Setup the camera state
     let bodies = query_bodies.iter().collect();
-    let position = Vec2::ZERO;
-    let scale = get_camera_fixed_settings(position, bodies, query_window, camera_state.margin());
+    let (position, scale) = get_camera_global_settings(bodies, query_window, camera_state.margin());
     camera_state.set_scale(scale);
     camera_state.set_position(position);
     println!("{}", scale);
