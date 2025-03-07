@@ -10,7 +10,7 @@ pub fn setup_camera(
     mut camera_state: ResMut<CameraState>
 ) {
     // Spawn a camera for UI
-    let cam = Camera2dBundle::default();
+    let cam = Camera2d::default();
     commands.spawn((cam, SysCamera));
 
     // Setup the camera state
