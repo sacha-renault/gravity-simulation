@@ -7,7 +7,7 @@ use plugin::SysPlugin;
 
 fn main() {
     App::new()
-        .add_plugins(DefaultPlugins)
+        .add_plugins((DefaultPlugins, MeshPickingPlugin))
         .add_plugins(SysPlugin)
         .run();
 }
