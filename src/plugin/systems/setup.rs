@@ -1,7 +1,7 @@
 use bevy::prelude::*;
 use bevy::sprite::MaterialMesh2dBundle;
 
-use crate::shared::Body;
+use crate::shared::{Body, BodyMeshLink};
 
 pub fn setup_plugin(mut commands: Commands) {
     // Body init
@@ -36,17 +36,30 @@ pub fn setup_body_visuals(
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    for (entity, body) in query.iter() {
-        // Calculate color based on density (you can customize this)
+    for (body_entity, body) in query.iter() {
+        // Calculate color based on density
         let hue = (body.get_density() * 0.5) % 1.0;
         let color = Color::hsl(hue * 360.0, 0.8, 0.5);
 
-        // Create a circular mesh for the body
-        commands.entity(entity).insert(MaterialMesh2dBundle {
-            mesh: meshes.add(shape::Circle::new(body.get_radius()).into()).into(),
+        // Create mesh handle
+        let mesh_handle = meshes.add(shape::Circle::new(body.get_radius()).into());
+        
+        // Create visual representation
+        commands.entity(body_entity).insert(MaterialMesh2dBundle {
+            mesh: mesh_handle.clone().into(),
             material: materials.add(ColorMaterial::from(color)),
-            transform: Transform::from_translation(Vec3::new(body.get_position().x, body.get_position().y, 0.0)),
+            transform: Transform::from_translation(Vec3::new(
+                body.get_position().x,
+                body.get_position().y,
+                0.0
+            )),
             ..default()
+        });
+        
+        // Store the link between body entity and its mesh
+        commands.entity(body_entity).insert(BodyMeshLink {
+            body_entity,
+            mesh_handle,
         });
     }
 }

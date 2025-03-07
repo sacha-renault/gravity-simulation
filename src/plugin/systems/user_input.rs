@@ -65,12 +65,27 @@ pub fn handle_mouse_motion_event(
 pub fn handle_keyboard_event(
     keyboard_input: Res<Input<KeyCode>>,
     mut state: ResMut<SimulationState>,
+    time: Res<Time>
 ) {
+    // Time delta
+    let factor = time.delta_seconds() * 150.;
+
+    // On long press, it keep changing the the value
     if keyboard_input.pressed(KeyCode::NumpadAdd) {
-        state.time_factor *= 1.01;
+        state.time_factor *= factor;
+
+        // Just press has more has extra
+        if keyboard_input.just_pressed(KeyCode::NumpadAdd) {
+            state.time_factor *= 1.2;
+        }
     }
     if keyboard_input.pressed(KeyCode::NumpadSubtract) {
-        state.time_factor /= 1.01;
+        state.time_factor /= factor;
+
+        // Just press has more has extra
+        if keyboard_input.just_pressed(KeyCode::NumpadSubtract) {
+            state.time_factor /= 1.2;
+        }
     }
 
     if keyboard_input.just_pressed(KeyCode::Space) {

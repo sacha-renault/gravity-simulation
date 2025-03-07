@@ -14,11 +14,12 @@ pub fn setup_camera(
     commands.spawn((cam, SysCamera));
 
     // Setup the camera state
+    // We want, at start, the camera to be centered on 0., 0. 
+    // And a scaling
     let bodies = query_bodies.iter().collect();
     let (position, scale) = get_camera_global_settings(bodies, query_window, camera_state.margin());
     camera_state.set_scale(scale);
     camera_state.set_position(position);
-    println!("{}", scale);
 }
 
 /// Updates the camera position and scale based on the current camera focus type
