@@ -13,7 +13,7 @@ pub fn update_bodies(
         return;
     }
 
-    let delta = time.delta_seconds() * simulation_state.time_factor;
+    let delta = time.delta_secs() * simulation_state.time_factor;
     let bodies = body_query.iter().collect::<Vec<_>>();
     let mut sum_force: Vec<Force> = vec![default(); bodies.len()];
 

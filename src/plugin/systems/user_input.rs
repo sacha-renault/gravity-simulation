@@ -44,7 +44,7 @@ pub fn handle_wheel_event(
 /// * When left mouse button is pressed: Accumulates all motion deltas and updates camera position
 /// * When left mouse button is released: Clears motion events to reset tracking
 pub fn handle_mouse_motion_event(
-    mouse_button_input: Res<Input<MouseButton>>,
+    mouse_button_input: Res<ButtonInput<MouseButton>>,
     mut mouse_motion_events: EventReader<MouseMotion>,
     mut camera_state: ResMut<CameraState>,
 ) {
@@ -63,12 +63,12 @@ pub fn handle_mouse_motion_event(
 }
 
 pub fn handle_keyboard_event(
-    keyboard_input: Res<Input<KeyCode>>,
+    keyboard_input: Res<ButtonInput<KeyCode>>,
     mut state: ResMut<SimulationState>,
     time: Res<Time>
 ) {
     // Time delta
-    let factor = time.delta_seconds() * 150.;
+    let factor = time.delta_secs() * 150.;
 
     // On long press, it keep changing the the value
     if keyboard_input.pressed(KeyCode::NumpadAdd) {

@@ -45,7 +45,7 @@ pub fn update_camera_position(
         },
         FocusType::BodyCentered(id) => {
             // Center position on the body if it was found
-            if let Ok(body) = body_query.get_component::<Body>(Entity::from_raw(*id)) {
+            if let Ok((_, body)) = body_query.get(Entity::from_raw(*id)) {
                 update_transform_2d(&mut transform, body.get_position());
             }
 
