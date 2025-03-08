@@ -1,4 +1,16 @@
-# Bevy planet simulation
+# Bevy Planet Simulation
 
 ## Known issue
-- dragging on the window doesn't work in the case ursor acceleration is activated.
+- Dragging on the window doesn't work when cursor acceleration is activated.
+
+## About
+A small, basic planet simulation built with Bevy. Minimal input required.
+
+## Usage
+1. Run the application
+2. Planets will automatically generate and interact
+3. No extensive customization options available
+
+## Controls
+- Click and drag to move camera (when cursor acceleration is off)
+- Mouse wheel: zoom and unzoom
