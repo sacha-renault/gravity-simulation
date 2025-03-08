@@ -2,6 +2,17 @@ use bevy::prelude::*;
 
 use crate::shared::{Body, SimulationState};
 
+pub fn spawn_bodies_components(bodies: Vec<Body>) -> impl for<'a, 'b> Fn(
+    Commands<'a, 'b>
+) {
+    move |mut commands| {
+        // Spawn a random bodies
+        for body in bodies.iter() {
+            commands.spawn(*body);
+        }
+    }
+}
+
 pub fn setup_body_visuals(
     mut commands: Commands,
     query: Query<(Entity, &Body), Added<Body>>,

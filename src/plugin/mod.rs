@@ -4,17 +4,6 @@ use bevy::prelude::*;
 use systems::*;
 use crate::shared::{Body, CameraState, SimulationState};
 
-pub fn setup_bodies(bodies: Vec<Body>) -> impl for<'a, 'b> Fn(
-    Commands<'a, 'b>
-) {
-    move |mut commands| {
-        // Spawn a random bodies
-        for body in bodies.iter() {
-            commands.spawn(*body);
-        }
-    }
-}
-
 pub struct SysPlugin {
     bodies: Vec<Body>
 }
@@ -33,8 +22,8 @@ impl Plugin for SysPlugin {
             .insert_resource(SimulationState::default())
 
             // Add setup and post setup systems
-            .add_systems(Startup, (
-                setup_bodies(self.bodies.clone()), setup_text_visual))
+            .add_systems(Startup, spawn_bodies_components(self.bodies.clone()))
+            .add_systems(Startup, setup_text_visual)
             .add_systems(PostStartup, setup_camera)
 
             // System for update body position and the visual
