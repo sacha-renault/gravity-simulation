@@ -1,4 +1,4 @@
-# Bevy Planet Simulation
+# Bevy Gravity Simulation
 
 ## Known issue
 - Dragging on the window doesn't work when cursor acceleration is activated.
