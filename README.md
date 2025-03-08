@@ -14,3 +14,4 @@ A small, basic planet simulation built with Bevy. Minimal input required.
 ## Controls
 - Click and drag to move camera (when cursor acceleration is off)
 - Mouse wheel: zoom and unzoom
+- Numpad + or -, change time factor
