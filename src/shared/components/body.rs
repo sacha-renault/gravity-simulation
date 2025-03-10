@@ -1,6 +1,7 @@
 use core::f32;
 
 use bevy::prelude::*;
+use serde::{Deserialize, Deserializer};
 
 use crate::utility::{G, DISTANCE_SCALE, MASS_SCALE, Force};
 
@@ -10,6 +11,33 @@ pub struct Body {
     speed: Vec2,
     radius: f32,
     density: f32,
+}
+
+// Define a helper struct that will deserialize without scaling
+#[derive(Deserialize)]
+struct BodyHelper {
+    position: Vec2,
+    speed: Vec2,
+    radius: f32,
+    density: f32,
+}
+
+impl<'de> Deserialize<'de> for Body {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        // Deserialize into the helper struct
+        let helper = BodyHelper::deserialize(deserializer)?;
+        
+        // Use Body::new to apply the scaling consistently
+        Ok(Body::new(
+            helper.position,
+            helper.speed,
+            helper.radius,
+            helper.density
+        ))
+    }
 }
 
 impl Default for Body {

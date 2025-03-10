@@ -10,8 +10,8 @@ pub struct SimulationState {
 impl Default for SimulationState {
     fn default() -> Self {
         Self {
-            paused: false,
-            time_factor: 1e4,
+            paused: true,
+            time_factor: 1e2,
             selected_body_id: default()
         }
     }

@@ -13,7 +13,7 @@ pub fn update_body_visuals(
     }
 }
 
-pub fn setup_text_visual(mut commands: Commands, asset_server: Res<AssetServer>) {
+pub fn setup_text_visual(mut commands: Commands, _asset_server: Res<AssetServer>) {
     // Load a font
     // let font = asset_server.load("fonts/FiraSans-Bold.ttf");
     
@@ -40,11 +40,12 @@ pub fn update_text_visual(
     mut query: Query<&mut Text, With<BottomText>>,
 ) {
     if let Ok(mut text) = query.get_single_mut() {
+        let time_factor = game_state.time_factor.to_string();
         let next_text = format!(
             "Center : ({}, {}) ; Scale : {} ; Time factor : {}",
             camera_state.position().x, camera_state.position().y,
             camera_state.scale(),
-            if !game_state.paused { game_state.time_factor.to_string() } else { String::from("Paused") },
+            if !game_state.paused { time_factor } else { format!("{}, (Paused)", time_factor) },
         );
         **text = next_text;
     }
